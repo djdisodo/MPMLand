@@ -95,7 +95,7 @@ class IsLandMain extends PluginBase implements Listener{
 			$this->getLogger()->info("섬 생성 완료.");
 		}
 		$this->getLogger()->info("섬 로드 완료.");
-  }
+    }
   if($this->s['field']['make']){
     Generator::addGenerator(FieldGenerator::class, "field");
     $gener = Generator::getGenerator("field");
@@ -222,8 +222,7 @@ class IsLandMain extends PluginBase implements Listener{
       } return true;
     }
     public function WarpIsland(int $num, Player $player){
-      $player->teleport($this->getServer()->getDefaultLevel('island')->getSafeSpawn());
-      $player->teleport(new Vector3($num * 200 + 103, 13, 297));
+      $player->teleport(new Position($num * 200 + 103, 13, 297, $this->getLevelByName('island'));
       $player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다."); return true;
     }
     public function getPlIslands($pname){
