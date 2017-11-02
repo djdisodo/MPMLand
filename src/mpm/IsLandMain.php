@@ -35,7 +35,7 @@ class IsLandMain extends PluginBase implements Listener{
 
       public function loadConfig(){
         @mkdir($this->getDataFolder());
-        if(!file_exist($this->getDataFolder() . 'data.json')) {
+        if(!file_exists($this->getDataFolder() . 'data.json')) {
 	          $this->c = [
 	              'island' => [],
 	              'islast' => 0,
@@ -47,7 +47,7 @@ class IsLandMain extends PluginBase implements Listener{
     	  }  
 
           file_put_contents($this->getDataFolder() . 'data.json', json_encode($this->c));
-          if(!file_exist($this->getDataFolder() . 'settings.yml')) {
+          if(!file_exists($this->getDataFolder() . 'settings.yml')) {
 	          $this->s = [
 	              'island' => [
 	                'prize' => 20000,
