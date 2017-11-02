@@ -2,9 +2,9 @@
 namespace mpm;
 
 /*
- * 이 코드는 SOLOLand(Nukkit) 에서 가져왔으며
- * PS가 java에서 php로 번역하였음을 알려드립니다.
- */
+* 이 코드는 SOLOLand(Nukkit) 에서 가져왔으며
+* PS가 java에서 php로 번역하였음을 알려드립니다.
+*/
 
 use pocketmine\level\generator\Generator;
 use pocketmine\block\Block;
@@ -19,7 +19,7 @@ class FieldGenerator extends Generator{
 
 	//public static TYPE_GRID_LAND = 11;
 
-/** @var ChunkManager */
+	/** @var ChunkManager */
 	private $level;
 
 	private $options = [];
@@ -76,7 +76,7 @@ class FieldGenerator extends Generator{
 		if($chunkX >= 0 && $chunkZ >= 0){
 			for($x = 0; $x <= 15; $x++){
 				for($z = 0; $z <= 15; $z++){
-				//	$chunk->setBiomeColor($x,$z,133,188,86);
+					//	$chunk->setBiomeColor($x,$z,133,188,86);
 					for($i = 0; $i < count($this->flatBlocksId); $i++){
 						$chunk->setBlock($x, $i, $z, $this->flatBlocksId[$i], $this->flatBlocksDamage[$i]);
 					}
@@ -134,17 +134,17 @@ class FieldGenerator extends Generator{
 		$main->c->__unset('flast');
 		$main->c->set('flast', $num + 1);
 		$main->c->get('land')[$num] = [
-			'fpos' => [
-				'x' => $x1,
-				'z' => $z1
-			],
-			'lpos' => [
-				'x' => $x2,
-				'z' => $z2
-			],
-			'level' => $level,
-			'share' => []
+		'fpos' => [
+		'x' => $x1,
+		'z' => $z1
+		],
+		'lpos' => [
+		'x' => $x2,
+		'z' => $z2
+		],
+		'level' => $level,
+		'share' => []
 		];
 	}
 }
- ?>
+?>

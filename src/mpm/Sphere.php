@@ -3,7 +3,7 @@
 namespace mpm;
 
 class Sphere {
-	
+
 	public static function getElements(int $cx, int $cy, int $cz, int $radius) : array {
 		$minX = $cx - $radius;
 		$minY = $cy - $radius;
@@ -11,9 +11,9 @@ class Sphere {
 		$maxX = $cx + $radius;
 		$maxY = $cy + $radius;
 		$maxZ = $cz + $radius;
-		
+
 		$ret = [];
-		
+
 		for($x = $minX; $x <= $maxX; $x++){
 			for($y = $minY; $y <= $maxY; $y++){
 				for($z = $minZ; $z <= $maxZ; $z++){
@@ -30,7 +30,7 @@ class Sphere {
 		}
 		return $ret;
 	}
-	
+
 	public static function getDiff(int $sx, int $sy, int $sz, int $ex, int $ey, int $ez){
 		$xzDiff = sqrt(pow(abs($sx - $ex), 2) + pow(abs($sz - $ez), 2));
 		return sqrt(pow($xzDiff, 2) + pow(abs($sy - $sz), 2));

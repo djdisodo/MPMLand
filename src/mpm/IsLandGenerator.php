@@ -42,37 +42,37 @@ class IsLandGenerator extends Generator {
 		for($x = 0; $x < 16; $x++){
 			for($z = 0; $z < 16; $z++){
 				if($this->main->s['island'] ['type'] == "water"){
-				$chunk->setBlock($x, 0, $z, 7);
-				$chunk->setBlock($x, 1, $z, 1);
-				$chunk->setBlock($x, 2, $z, 1);
-				$chunk->setBlock($x, 3, $z, 1);
-				$chunk->setBlock($x, 4, $z, 1);
-				$chunk->setBlock($x, 5, $z, 1);
-				$chunk->setBlock($x, 6, $z, 1);
-				$chunk->setBlock($x, 7, $z, 12);
-				$chunk->setBlock($x, 8, $z, 8);
-				$chunk->setBlock($x, 9, $z, 8);
-			}else{
-				$chunk->setBlock($x, 0, $z, 0);
-				$chunk->setBlock($x, 1, $z, 0);
-				$chunk->setBlock($x, 2, $z, 0);
-				$chunk->setBlock($x, 3, $z, 0);
-				$chunk->setBlock($x, 4, $z, 0);
-				$chunk->setBlock($x, 5, $z, 0);
-				$chunk->setBlock($x, 6, $z, 0);
-				$chunk->setBlock($x, 7, $z, 0);
-				$chunk->setBlock($x, 8, $z, 0);
-				$chunk->setBlock($x, 9, $z, 0);
-			}
+					$chunk->setBlock($x, 0, $z, 7);
+					$chunk->setBlock($x, 1, $z, 1);
+					$chunk->setBlock($x, 2, $z, 1);
+					$chunk->setBlock($x, 3, $z, 1);
+					$chunk->setBlock($x, 4, $z, 1);
+					$chunk->setBlock($x, 5, $z, 1);
+					$chunk->setBlock($x, 6, $z, 1);
+					$chunk->setBlock($x, 7, $z, 12);
+					$chunk->setBlock($x, 8, $z, 8);
+					$chunk->setBlock($x, 9, $z, 8);
+				}else{
+					$chunk->setBlock($x, 0, $z, 0);
+					$chunk->setBlock($x, 1, $z, 0);
+					$chunk->setBlock($x, 2, $z, 0);
+					$chunk->setBlock($x, 3, $z, 0);
+					$chunk->setBlock($x, 4, $z, 0);
+					$chunk->setBlock($x, 5, $z, 0);
+					$chunk->setBlock($x, 6, $z, 0);
+					$chunk->setBlock($x, 7, $z, 0);
+					$chunk->setBlock($x, 8, $z, 0);
+					$chunk->setBlock($x, 9, $z, 0);
+				}
 			}
 		}
 		$num = 0;
 
 		while(true){
 			$this->main->c['island'] [$num] = [
-				'share' => [],
-				'pos' => 103 + $num * 200,
-				'welcomeM' => "섬".$num."번에 오신것을 환영합니다."
+			'share' => [],
+			'pos' => 103 + $num * 200,
+			'welcomeM' => "섬".$num."번에 오신것을 환영합니다."
 			];
 			$this->main->c['islast']++;
 			$num++;
