@@ -91,7 +91,8 @@ class IsLandMain extends PluginBase implements Listener{
     }
     public function saveConfig() {
     	file_put_contents($this->getDataFolder() . 'data.json', json_encode($this->c));
-    	return file_put_contents($this->getDataFolder() . 'settings.yml', yaml_emit($this->s));
+    	file_put_contents($this->getDataFolder() . 'settings.yml', yaml_emit($this->s));
+    	return true;
     }
     public function onEnable(){
     	$this->loadConfig();

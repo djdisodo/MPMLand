@@ -2,8 +2,6 @@
 
 namespace mpm;
 
-use mpm\Sphere;
-
 class Sphere {
 	
 	public static function getElements(int $cx, int $cy, int $cz, int $radius) : array {
