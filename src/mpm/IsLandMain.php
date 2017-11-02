@@ -248,7 +248,7 @@ class IsLandMain extends PluginBase implements Listener{
       $player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다."); return true;
     }
     public function getPlIslands(string $pname) : array{
-    	$pname = strtolower($pname)
+    	$pname = strtolower($pname);
       $d = [];
       for ($i=0; $i >= $this->c['islast'] ; $i++) {
         if(! isset($this->c['island'] [$i] ['owner'])) continue;
