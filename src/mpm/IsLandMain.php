@@ -125,10 +125,6 @@ class IsLandMain extends PluginBase implements Listener{
     $this->getLogger()->info("땅 로드 완료.");
     }
   }
-    public function onDisable(){
-      $this->c->save();
-      $this->s->save();
-    }
 
     public function onCommand(CommandSender $pl, Command $cmd, String $label, array $args) : bool{
       if(! $pl instanceof Player){
