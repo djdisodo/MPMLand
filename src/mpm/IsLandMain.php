@@ -240,7 +240,7 @@ class IsLandMain extends PluginBase implements Listener{
       } return true;
     }
     public function warpIsland(int $num, Player $player){
-      $player->teleport(new Position($num * 200 + 103, 13, 297, $this->getLevelByName('island')));
+      $player->teleport(new Position($num * 200 + 103, 13, 297, $this->getServer()->getLevelByName('island')));
       $player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다."); return true;
     }
     public function getPlIslands(string $pname) : array{
