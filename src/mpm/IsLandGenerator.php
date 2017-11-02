@@ -16,7 +16,7 @@ class IsLandGenerator extends Generator {
 	/** @var Random */
 	private $random;
 	/** @var Main*/
-	private $main;
+	private $main = new Main();
 
 	public function init(ChunkManager $level, Random $random){
 		$this->level = $level;
