@@ -16,11 +16,12 @@ class IsLandGenerator extends Generator {
 	/** @var Random */
 	private $random;
 	/** @var Main*/
-	private $main = new Main();
+	private $main;
 
 	public function init(ChunkManager $level, Random $random){
 		$this->level = $level;
 		$this->random = $random;
+		$this->main = new Main();
 	}
 
 	public function __construct(array $options = []){
