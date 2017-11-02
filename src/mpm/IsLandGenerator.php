@@ -69,7 +69,7 @@ class IsLandGenerator extends Generator {
 		$num = 0;
 
 		while(true){
-			$this->getOwner()->c['island'] [$num] = [
+			$this->main->c['island'] [$num] = [
 				'share' => [],
 				'pos' => 103 + $num * 200,
 				'welcomeM' => "섬".$num."번에 오신것을 환영합니다."
