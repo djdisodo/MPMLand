@@ -6,5 +6,5 @@ api:
 version: "Beta1"
 
 commands:
-  섬:
-    permission: MPMLand
+ 섬:
+  permission: MPMLand
