@@ -109,7 +109,7 @@ class IsLandMain extends PluginBase implements Listener{
     $this->getLogger()->info("땅 로드 완료.");
     }
   }
-    public function onDisalbe(){
+    public function onDisable(){
       $this->c->save();
       $this->s->save();
     }
@@ -139,26 +139,26 @@ class IsLandMain extends PluginBase implements Listener{
               if(count($this->getPlIslands($pl->getName())) >= $this->s['island'] ['max']){
                 $pl->sendMessage($pr. "당신의 섬 개수가 이미 제한 개수만큼 채워졌습니다."); return true;
               }
-              $this->SetIsland($this->c['islast'], $pl);
+              $this->setIsland($this->c['islast'], $pl);
             } break;
            case '양도': {
              if(! isset($args[1])){$pl->sendMessage($pr."/섬 양도 [플레이어]"); return true;}
              if($this->nowIsland($pl) == false or $this->c['island'] [$this->nowIsland($pl)] ['owner'] !== $pl->getName()){$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다."); return true;}
-             $this->SetIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
+             $this->setIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
            } break;
            case '이동': {
              if(! isset($args[1])){$pl->sendMessage($pr."/섬 이동 [번호]"); return true;}
-             $this->WarpIsland($args[1], $pl);
+             $this->warpIsland($args[1], $pl);
            } break;
            case '공유': {
              if(! isset($args[1])){$pl->sendMessage($pr."/섬 공유 [플레이어]"); return true;}
              if($this->nowIsland($pl) == false or $this->c['island'] [$this->nowIsland($pl)] ['owner'] !== $pl->getName()){$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다."); return true;}
-             $this->ShareIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
+             $this->shareIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
            } break;
            case '공유해제': {
              if(! isset($args[1])){$pl->sendMessage($pr."/섬 공유해제 [플레이어]"); return true;}
              if($this->nowIsland($pl) == false or $this->c['island'] [$this->nowIsland($pl)] ['owner'] !== $pl->getName()){$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다."); return true;}
-             $this->OutIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
+             $this->outIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
            } break;
            default: {
              $pl->sendMessage($pr." /섬 구매 §o§8- 섬을 구매합니다.");
@@ -177,7 +177,7 @@ class IsLandMain extends PluginBase implements Listener{
     }
 
     /**EventListning Point*/
-    public function blockbreak(BlockBreakEvent $ev){
+    public function blockBreak(BlockBreakEvent $ev){
       $pl = $ev->getPlayer();
       $num = $this->nowIsland($pl);
       if($pl->isOp() or $this->c['island'] [$this->nowIsland($pl)] ['owner'] == $pl->getName() or isset($this->c['island'] [$this->nowIsland($pl)] ['share'] [$pl->getName()])){
@@ -188,7 +188,7 @@ class IsLandMain extends PluginBase implements Listener{
       }
     }
 
-    public function blockplace(BlockPlaceEvent $ev){
+    public function blockPlace(BlockPlaceEvent $ev){
       $pl = $ev->getPlayer();
       $num = $this->nowIsland($pl);
       if($pl->isOp() or $this->c['island'] [$this->nowIsland($pl)] ['owner'] == $pl->getName() or isset($this->c['island'] [$this->nowIsland($pl)] ['share'] [$pl->getName()])){
@@ -200,7 +200,7 @@ class IsLandMain extends PluginBase implements Listener{
     }
 
     /** 다른 곳에서 사용할 섬 메소드들*/
-    public function SetIsland(int $num, Player $owner){
+    public function setIsland(int $num, Player $owner){
       if(isset($this->c['island'] [$num] ['owner'])){
         unset($this->c['island'] [$num] ['owner']);
       }else{
@@ -209,11 +209,11 @@ class IsLandMain extends PluginBase implements Listener{
       $this->c['island'] [$num] ['owner'] = $owner->getName();
       $owner->sendMessage($this->prefix."섬 ".$num."을 가지셨습니다!"); return true;
     }
-    public function ShareIsland(int $num, Player $share){
+    public function shareIsland(int $num, Player $share){
       array_push($this->c['island'] [$num] ['share'], $share->getName());
       $share->sendMessage($this->prefix."섬 ".$num."번을 공유 받았습니다."); return true;
     }
-    public function OutIsland(int $num, Player $outed){
+    public function outIsland(int $num, Player $outed){
       for($i = 0; $i >= count($this->c['island'] [$num] ['share']); $i++){
         if(! $this->c['island'] [$num] ['share'][$i] == $outed->getName()) continue;
         unset($this->c['island'] [$num] ['share'][$i]);
@@ -221,7 +221,7 @@ class IsLandMain extends PluginBase implements Listener{
         break;
       } return true;
     }
-    public function WarpIsland(int $num, Player $player){
+    public function warpIsland(int $num, Player $player){
       $player->teleport(new Position($num * 200 + 103, 13, 297, $this->getLevelByName('island'));
       $player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다."); return true;
     }
@@ -249,7 +249,7 @@ class IsLandMain extends PluginBase implements Listener{
     #Comming Soon..
     }
     /*class Task extends PluginTask{
-      function onRun($currentTick){
+      function onRun(int $currentTick){
       /*  $this->c = new Config($this->getOwner()->getDataFolder().'data.json', Config::JSON, [
             'island' => [],
             'land' => []
