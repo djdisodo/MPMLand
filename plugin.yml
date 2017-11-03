@@ -3,8 +3,41 @@ authors: ["PS88", "GoldBigDragon"]
 main: mpm\IsLandMain
 api:
  - 3.0.0-ALPHA8
+ - 3.0.0-ALPHA9
 version: "Beta1"
 
 commands:
- 섬:
-  permission: MPMLand
+  섬:
+    permission: island
+  섬구매:
+    permission: buyisland
+  섬이동:
+    permission: moveisland
+  섬양도:
+    permission: changeownerisland
+  섬공유:
+    permission: shareisland
+  섬추방:
+    permission: unshareisland
+  섬정보:
+    permission: islandinfo
+  섬관리자추가:
+    permission: addadmin
+
+permissions:
+  island:
+    default: true
+  buyisland:
+    default: true
+  changeownerisland:
+    default: true
+  shareisland:
+    default: true
+  unshareisland:
+    default: true
+  moveisland:
+    default: true
+  islandinfo:
+    default: true
+  addadmin:
+    default: true
