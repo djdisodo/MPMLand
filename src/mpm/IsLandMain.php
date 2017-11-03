@@ -15,7 +15,8 @@ use pocketmine\command\Command;
 use onebone\economyapi\EconomyAPI;
 use pocketmine\level\generator\Generator;
 use pocketmine\event\player\PlayerMoveEvent;
-use pocketmine\event\block\{BlockBreakEvent, BlockPlaceEvent;
+use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
 
 use mpm\IsLandGenerator as LandGenerator;
