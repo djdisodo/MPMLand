@@ -106,7 +106,7 @@ $this->c->set('islast', $num + 1);
 			$gener = Generator::getGenerator("island");
 
 			if(!($this->getServer()->loadLevel("island"))){
-				@mkdir($this->getServer()->getDataPath() . "/" . "worlds" . "/" . "island");
+				@mkdir($this->getServer()->getDataPath() . DIRECTORY_SEPARATOR . "worlds" . DIRECTORY_SEPARATOR . "island");
 				$options = [];
 				$this->getServer()->generateLevel("island", 0, $gener, $options);
 				$this->getLogger()->info("섬 생성 완료.");
@@ -118,7 +118,7 @@ $this->c->set('islast', $num + 1);
 			$gener = Generator::getGenerator("field");
 
 			if(!($this->getServer()->loadLevel("field"))){
-				@mkdir($this->getServer()->getDataPath() . "/" . "worlds" . "/" . "field");
+				@mkdir($this->getServer()->getDataPath() . DIRECTORY_SEPARATOR . "worlds" . DIRECTORY_SEPARATOR . "field");
 				$options = [];
 				$this->getServer()->generateLevel("field", 0, $gener, $options);
 				$this->getLogger()->info("땅 생성 완료.");
@@ -184,7 +184,7 @@ $this->c->set('islast', $num + 1);
 							$pl->sendMessage($pr."/섬 이동 [번호] or /섬 [번호]");
 						}
 						if($this->warpIsland($args[1], $pl)) {
-							$player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다.");
+							$player->sendMessage($this->prefix."섬".$args[1]."번으로 이동하셨습니다.");
 						} else {
 							$pl->sendMessage($pr.'비공개된 섬 입니다.');
 						}
@@ -247,13 +247,24 @@ $this->c->set('islast', $num + 1);
 						}
 						$this->getServer()->getPlayer($args[1])->sendMessage($this->prefix."당신은 섬".$this->nowIsland($pl)."번에서 퇴출당하셨습니다.");
 					}
+					case '정보': {
+
+						if($this->getIslandRank($this->nowIsland($pl), $pl) >= 2){
+							$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다.");
+							return true;
+						}
+						if($this->c['island']['visitable'] == false and $this->getIslandRank($this->nowIsland($pl), $pl) >= 3) {
+							$pl->sendMessage($pr.'비공개된 섬 입니다.');
+						} else {
+							$this->loadConfig();
+							$pl->sendMessage(var_dump($this->c['island'][$this->nowIsland($pl)])); //TODO 간지나게
+							return true
+						}
+					}
 					default: {
 						if(is_numeric($args[0])) {
-							if(!isset($args[1])){
-								$pl->sendMessage($pr."/섬 이동 [번호] or /섬 [번호]");
-							}
-							if($this->warpIsland($args[1], $pl)) {
-								$player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다.");
+							if($this->warpIsland($args[0], $pl)) {
+								$player->sendMessage($this->prefix."섬".$args[0]."번으로 이동하셨습니다.");
 							} else {
 								$pl->sendMessage($pr.'비공개된 섬 입니다.');
 							}
@@ -263,7 +274,7 @@ $this->c->set('islast', $num + 1);
 						$pl->sendMessage($pr." /섬 양도 [플레이어] §o§8- 섬을 [플레이어] 에게 양도합니다.");
 						$pl->sendMessage($pr." /섬 이동 [번호] §o§8- [번호] 섬으로 갑니다.");
 						$pl->sendMessage($pr." /섬 공유 [플레이어] §o§8- 이섬을 [플레이어]에게 공유 시킵니다.");
-						$pl->sendMessage($pr." /섬 공유해제 [플레이어] §o§8- 이섬 공유자인 [플레이어]를 섬에서 공유해제시킵니다.");
+						$pl->sendMessage($pr." /섬 추방 [플레이어] §o§8- 이섬 공유자인 [플레이어]를 섬에서 공유해제시킵니다.");
 						return true;
 					}
 				
@@ -278,6 +289,17 @@ $this->c->set('islast', $num + 1);
 	}
 
 	/**EventListning Point*/
+	public function block(BlockEvent $ev) {
+		$pl = $ev->getPlayer();
+		$num = $this->nowIsland($pl);
+		if($this->getIslandRank($num, $pl) < 3) {
+			return true;
+		}elseif($pl->getLevel()->getName() == 'island'){
+			$ev->setCancelled();
+			$pl->sendMessage($this->prefix."수정권한이 없습니다.");
+		}
+	}
+	/*
 	public function blockBreak(BlockBreakEvent $ev){
 		$pl = $ev->getPlayer();
 		$num = $this->nowIsland($pl);
@@ -299,7 +321,7 @@ $this->c->set('islast', $num + 1);
 			$pl->sendMessage($this->prefix."수정권한이 없습니다.");
 		}
 	}
-
+	*/
 	/** 다른 곳에서 사용할 섬 메소드들*/
 	public function setIsland(int $num, Player $owner){
 		$this->loadConfig();
@@ -351,7 +373,7 @@ $this->c->set('islast', $num + 1);
 	}
 	public function warpIsland(int $num, Player $player) : bool{
 		$this->loadConfig();
-		if($this->c['island']['visitable'] == false and $this->getIslandRank($this->nowIsland($pl), $pl) >= 3) {
+		if($this->c['island']['visitable'] == false and $this->getIslandRank($num, $player) >= 3) {
 			return false;
 		}
 		$player->teleport(new Position($num * 200 + 103, 13, 297, $this->getServer()->getLevelByName('island')));
@@ -369,16 +391,21 @@ $this->c->set('islast', $num + 1);
 	}
 	public function nowIsland(Player $player){
 		if($player->getLevel()->getName() !== 'island') return false;
+		$this->loadConfig();
 		for ($i=0; $i >= $this->c['islast'] ; $i++) {
 # code...
 			if($player->distance(new Vector3(103 + $i * 200, 12, 297)) > 200) continue;
-			return $i;
+				if(isset($this->c['island'][$i])) {
+					return $i;
+				} else {
+					return false;
+				}
 			break;
 		}
 	}
-	public function getIslandRank(int $num,string $player) : tinyint{
-		if($this->nowIsland($player) == false) {
-			return 3;
+	public function getIslandRank($num,string $player) : tinyint{
+		if($num == false) {
+			return 4;
 		}
 		if($pl->isOp() or $this->c['island'] [$this->nowIsland($player)] ['owner'] == strtolower($player->getName())) {
 			return 0;
