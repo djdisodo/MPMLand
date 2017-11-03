@@ -397,7 +397,7 @@ $this->c->set('islast', $num + 1);
 			break;
 		}
 	}
-	public function getIslandRank($num,string $player) : tinyint{
+	public function getIslandRank($num,string $player) : int{
 		if($num == false) {
 			return 4;
 		}
