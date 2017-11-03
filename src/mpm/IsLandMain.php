@@ -277,16 +277,21 @@ $this->c->set('islast', $num + 1);
 						$pl->sendMessage($pr." /섬 추방 [플레이어] §o§8- 이섬 공유자인 [플레이어]를 섬에서 공유해제시킵니다.");
 						return true;
 					}
+					return true;
 				
 				}
+				return true;
 			}
 			case '땅': {
 				$pl->sendMessage("준비중..");
 #현재 연구 중입니다..
 			}
-		
+		}
+
 		return true;
 	}
+
+
 
 	/**EventListning Point*/
 	public function block(BlockEvent $ev) {
@@ -420,9 +425,8 @@ $this->c->set('islast', $num + 1);
 	}
 
 	/** 다른 곳에서 사용할 땅 메소드들*/
-
-#Comming Soon..
 }
+#Comming Soon..
 /*class Task extends PluginTask{
 function onRun(int $currentTick){
 /*  $this->c = new Config($this->getOwner()->getDataFolder().'data.json', Config::JSON, [
