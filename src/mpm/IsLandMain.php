@@ -134,7 +134,7 @@ $this->c->set('islast', $num + 1);
 		}
 		$pr = $this->prefix;
 		switch($cmd->getName()){
-		case '섬': {
+			case '섬': {
 				if(! isset($args[0])){
 					$pl->sendMessage($pr." /섬 구매 §o§8- 섬을 구매합니다.");
 					$pl->sendMessage($pr." /섬 양도 [플레이어] §o§8- 섬을 [플레이어] 에게 양도합니다.");
@@ -144,56 +144,144 @@ $this->c->set('islast', $num + 1);
 					return true;
 				}
 				switch($args[0]){
-				case '구매': {
+					case '구매': {
 						if(EconomyAPI::getInstance()->myMoney($pl->getName()) < $this->s['island'] ['prize']){
 							$pl->sendMessage($pr."돈이 부족합니다. 섬 가격 : ".$this->s['island'] ['prize']);
 							return true;
 						}
 						if(count($this->getPlIslands($pl->getName())) >= $this->s['island'] ['max']){
-							$pl->sendMessage($pr. "당신의 섬 개수가 이미 제한 개수만큼 채워졌습니다."); return true;
+							$pl->sendMessage($pr. "당신의 섬 개수가 이미 제한 개수만큼 채워졌습니다.");
+							return true;
 						}
 						$this->setIsland($this->c['islast'], $pl);
-					} break;
-				case '양도': {
-						if(! isset($args[1])){$pl->sendMessage($pr."/섬 양도 [플레이어]"); return true;}
-						if($this->nowIsland($pl) == false or $this->c['island'] [$this->nowIsland($pl)] ['owner'] !== strtolower($pl->getName())){$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다."); return true;}
+						$pl->sendMessage($this->prefix."섬 ". $this->c['islast'] ."을 구매하셨습니다!");
+						return true;
+					}
+					case '양도': {
+						if(! isset($args[1])){
+							$pl->sendMessage($pr."/섬 양도 [플레이어]");
+							return true;
+						}
+						if($this->getIslandRank($this->nowIsland($pl), $pl) !== 0) {
+							$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다.");
+							return true;
+						}
+						if(count($this->getPlIslands($args[1]) >= $this->s['island'] ['max']) {
+							$pl->sendMessage($pr . $args[1] . "의 섬 개수가 이미 제한 개수만큼 채워졌습니다");
+							return true;
+						}
 						$this->setIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
-					} break;
-				case '이동': {
-						if(! isset($args[1])){$pl->sendMessage($pr."/섬 이동 [번호]"); return true;}
-						$this->warpIsland($args[1], $pl);
-					} break;
-				case '공유': {
-						if(! isset($args[1])){$pl->sendMessage($pr."/섬 공유 [플레이어]"); return true;}
-						if($this->nowIsland($pl) == false or $this->c['island'] [$this->nowIsland($pl)] ['owner'] !== strtolower($pl->getName())){$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다."); return true;}
+						$pl->sendMessage($this->prefix."섬 ".$this->nowIsland($pl)."을 " . $args[1] . "에게 양도하셨습니다");
+						if($this->getServer()->getPlayer($args[1])->isOnline() == false) {
+							return true;
+						}
+						$this->getServer()->getPlayer($args[1])->sendMessage($this->prefix."섬 ".$this->nowIsland($pl)."번을 양도 받았습니다.");
+						return true;
+					}
+
+					case '이동': {
+						if(!isset($args[1])){
+							$pl->sendMessage($pr."/섬 이동 [번호] or /섬 [번호]");
+						}
+						if($this->warpIsland($args[1], $pl)) {
+							$player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다.");
+						} else {
+							$pl->sendMessage($pr.'비공개된 섬 입니다.');
+						}
+						return true;
+					}
+					case '공유': {
+						if(! isset($args[1])){
+							$pl->sendMessage($pr."/섬 공유 [플레이어]");
+							return true;
+						}
+						if(strtolower($args[1]) == strtolower($pl->getName()) or $this->getIslandRank($this->c['islast'],$pl) <= $this->getIslandRank($this->c['islast'],$this->getServer()->getPlayer($args[1]))) {
+							$pl->sendMessage($pr."자기 자신이나 자신보다 랭크가 같거나 높은 플레이어는 대상이 될수 없습니다.");
+						}
+						if($this->getIslandRank($this->nowIsland($pl), $pl) >= 3){
+							$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다.");
+							return true;
+						}
 						$this->shareIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
-					} break;
-				case '공유해제': {
-						if(! isset($args[1])){$pl->sendMessage($pr."/섬 공유해제 [플레이어]"); return true;}
-						if($this->nowIsland($pl) == false or $this->c['island'] [$this->nowIsland($pl)] ['owner'] !== strtolower($pl->getName())){$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다."); return true;}
+						if($this->getServer()->getPlayer($args[1])->isOnline() == false) {
+							return true;
+						}
+						$this->getServer()->getPlayer($args[1])->sendMessage($this->prefix."섬 ".$this->nowIsland($pl)."번을 공유 받았습니다.");
+						return true;
+					}
+					case '관리자추가': {
+						if(! isset($args[1])){
+							$pl->sendMessage($pr."/섬 관리자추가 [플레이어]");
+							return true;
+						}
+						if(strtolower($args[1]) == strtolower($pl->getName()) or $this->getIslandRank($this->c['islast'],$pl) <= $this->getIslandRank($this->c['islast'],$this->getServer()->getPlayer($args[1]))) {
+							$pl->sendMessage($pr."자기 자신이나 자신보다 랭크가 같거나 높은 플레이어는 대상이 될수 없습니다.");
+						}
+						if($this->getIslandRank($this->nowIsland($pl), $pl) >= 2){
+							$pl->sendMessage($pr."권한이 없습니다.");
+							return true;
+						}
 						$this->outIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
-					} break;
-				default: {
+						$this->shareIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
+						if($this->getServer()->getPlayer($args[1])->isOnline() == false) {
+							return true;
+						}
+						$this->getServer()->getPlayer($args[1])->sendMessage($this->prefix."섬 ".$this->nowIsland($pl)."번의 관리자가 되셨습니다.");
+						return true;
+					}
+					case '추방': {
+						if(! isset($args[1])){
+							$pl->sendMessage($pr."/섬 추방 [플레이어]");
+							return true;
+						}
+						if(strtolower($args[1]) == strtolower($pl->getName()) or $this->getIslandRank($this->c['islast'],$pl) <= $this->getIslandRank($this->c['islast'],$this->getServer()->getPlayer($args[1]))) {
+							$pl->sendMessage($pr."자기 자신이나 자신보다 랭크가 같거나 높은 플레이어는 대상이 될수 없습니다.");
+						}
+						if($this->getIslandRank($this->nowIsland($pl), $pl) >= 2){
+							$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다.");
+							return true;
+						}
+						$this->outIsland($this->nowIsland($pl), $this->getServer()->getPlayer($args[1]));
+						if($this->getServer()->getPlayer($args[1])->isOnline() == false) {
+							return true;
+						}
+						$this->getServer()->getPlayer($args[1])->sendMessage($this->prefix."당신은 섬".$this->nowIsland($pl)."번에서 퇴출당하셨습니다.");
+					}
+					default: {
+						if(is_numeric($args[0])) {
+							if(!isset($args[1])){
+								$pl->sendMessage($pr."/섬 이동 [번호] or /섬 [번호]");
+							}
+							if($this->warpIsland($args[1], $pl)) {
+								$player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다.");
+							} else {
+								$pl->sendMessage($pr.'비공개된 섬 입니다.');
+							}
+							return true;
+						}
 						$pl->sendMessage($pr." /섬 구매 §o§8- 섬을 구매합니다.");
 						$pl->sendMessage($pr." /섬 양도 [플레이어] §o§8- 섬을 [플레이어] 에게 양도합니다.");
 						$pl->sendMessage($pr." /섬 이동 [번호] §o§8- [번호] 섬으로 갑니다.");
 						$pl->sendMessage($pr." /섬 공유 [플레이어] §o§8- 이섬을 [플레이어]에게 공유 시킵니다.");
 						$pl->sendMessage($pr." /섬 공유해제 [플레이어] §o§8- 이섬 공유자인 [플레이어]를 섬에서 공유해제시킵니다.");
-					} break;
+						return true;
+					}
+				
 				}
-			} break;
-		case '땅': {
+			}
+			case '땅': {
 				$pl->sendMessage("준비중..");
 #현재 연구 중입니다..
 			}
-		} return true;
+		
+		return true;
 	}
 
 	/**EventListning Point*/
 	public function blockBreak(BlockBreakEvent $ev){
 		$pl = $ev->getPlayer();
 		$num = $this->nowIsland($pl);
-		if($pl->isOp() or $this->c['island'] [$this->nowIsland($pl)] ['owner'] == strtolower($pl->getName()) or isset($this->c['island'] [$this->nowIsland($pl)] ['share'] [strtolower($pl->getName())])){
+		if($this->getIslandRank($num, $pl) < 3){
 			return true;
 		}elseif($pl->getLevel()->getName() == 'island'){
 			$ev->setCancelled();
@@ -203,8 +291,9 @@ $this->c->set('islast', $num + 1);
 
 	public function blockPlace(BlockPlaceEvent $ev){
 		$pl = $ev->getPlayer();
-		//$num = $this->nowIsland($pl);
-		if($pl->isOp() or $this->c['island'] [$this->nowIsland($pl)] ['owner'] == strtolower($pl->getName()) or isset($this->c['island'] [$this->nowIsland($pl)] ['share'] [strtolower($pl->getName())])){
+		$num = $this->nowIsland($pl);
+		if($this->getIslandRank($num, $pl) < 3) {
+			return true;
 		}elseif($pl->getLevel()->getName() == 'island'){
 			$ev->setCancelled();
 			$pl->sendMessage($this->prefix."수정권한이 없습니다.");
@@ -219,16 +308,30 @@ $this->c->set('islast', $num + 1);
 		}else{
 			$this->c['islast']++;
 		}
-		$this->c['island'] [$num] ['owner'] = strtolower($owner->getName());
+		$this->c['island'] [$num] = [
+		'owner' => strtolower($owner->getName()),
+		'visitable' => true,
+		'pvp' => true,
+		];
 		$this->saveConfig();
-		$owner->sendMessage($this->prefix."섬 ".$num."을 가지셨습니다!"); return true;
+		return true;
+	}
+	public function resetIsland(int $num) { //TODO 섬초기화
+		return true;
 	}
 	public function shareIsland(int $num, Player $share){
 		$this->loadConfig();
 		$this->c['island'][$num]['share'][] = strtolower($share->getName());
 		$this->c['island'][$num]['share'] = array_unique($this->c['island'][$num]['share']);
 		$this->saveConfig();
-		$share->sendMessage($this->prefix."섬 ".$num."번을 공유 받았습니다."); return true;
+		return true;
+	}
+	public function addAdmin(int $num, Player $admin){
+		$this->loadConfig();
+		$this->c['island'][$num]['admin'][] = strtolower($share->getName());
+		$this->c['island'][$num]['admin'] = array_unique($this->c['island'][$num]['admin']);
+		$this->saveConfig();
+		return true;
 	}
 	public function outIsland(int $num, Player $outed){
 		$this->loadConfig();
@@ -236,13 +339,23 @@ $this->c->set('islast', $num + 1);
 			if(! $this->c['island'] [$num] ['share'][$i] == strtolower($outed->getName())) continue;
 			unset($this->c['island'] [$num] ['share'][$i]);
 			$this->saveConfig();
-			$outed->sendMessage($this->prefix."당신은 섬".$num."번에서 퇴출당하셨습니다.");
 			break;
-		} return true;
+		}
+		for($i = 0; $i >= count($this->c['island'] [$num] ['admin']); $i++){
+			if(! $this->c['island'] [$num] ['admin'][$i] == strtolower($outed->getName())) continue;
+			unset($this->c['island'] [$num] ['admin'][$i]);
+			$this->saveConfig();
+			break;
+		}
+		return true;
 	}
-	public function warpIsland(int $num, Player $player){
+	public function warpIsland(int $num, Player $player) : bool{
+		$this->loadConfig();
+		if($this->c['island']['visitable'] == false and $this->getIslandRank($this->nowIsland($pl), $pl) >= 3) {
+			return false;
+		}
 		$player->teleport(new Position($num * 200 + 103, 13, 297, $this->getServer()->getLevelByName('island')));
-		$player->sendMessage($this->prefix."섬".$num."번으로 이동하셨습니다."); return true;
+		return true;
 	}
 	public function getPlIslands(string $pname) : array{
 		$pname = strtolower($pname);
@@ -262,6 +375,21 @@ $this->c->set('islast', $num + 1);
 			return $i;
 			break;
 		}
+	}
+	public function getIslandRank(int $num,string $player) : tinyint{
+		if($this->nowIsland($player) == false) {
+			return 3;
+		}
+		if($pl->isOp() or $this->c['island'] [$this->nowIsland($player)] ['owner'] == strtolower($player->getName())) {
+			return 0;
+		}
+		if(isset($this->c['island'] [$this->nowIsland($player)] ['admin'] [strtolower($player->getName())])) {
+			return 1;
+		}
+		if(isset($this->c['island'] [$this->nowIsland($player)] ['share'] [strtolower($plater->getName())])) {
+			return 2;
+		}
+		return 3;
 	}
 
 	/** 다른 곳에서 사용할 땅 메소드들*/
