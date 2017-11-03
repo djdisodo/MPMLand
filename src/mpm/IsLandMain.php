@@ -166,7 +166,7 @@ $this->c->set('islast', $num + 1);
 							$pl->sendMessage($pr."당신은 섬에 있지 않거나 당신의 섬이 아닌곳에 있습니다.");
 							return true;
 						}
-						if(count($this->getPlIslands($args[1]) >= $this->s['island'] ['max']) {
+						if(count($this->getPlIslands($args[1])) >= $this->s['island'] ['max']) {
 							$pl->sendMessage($pr . $args[1] . "의 섬 개수가 이미 제한 개수만큼 채워졌습니다");
 							return true;
 						}
