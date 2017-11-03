@@ -15,7 +15,7 @@ use pocketmine\command\Command;
 use onebone\economyapi\EconomyAPI;
 use pocketmine\level\generator\Generator;
 use pocketmine\event\player\PlayerMoveEvent;
-use pocketmine\event\block\{BlockPlaceEvent, BlockBreakEvent};
+use pocketmine\event\block\{BlockBreakEvent, BlockPlaceEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
 
 use mpm\IsLandGenerator as LandGenerator;
@@ -294,17 +294,6 @@ $this->c->set('islast', $num + 1);
 
 
 	/**EventListning Point*/
-	public function block(BlockEvent $ev) {
-		$pl = $ev->getPlayer();
-		$num = $this->nowIsland($pl);
-		if($this->getIslandRank($num, $pl) < 3) {
-			return true;
-		}elseif($pl->getLevel()->getName() == 'island'){
-			$ev->setCancelled();
-			$pl->sendMessage($this->prefix."수정권한이 없습니다.");
-		}
-	}
-	/*
 	public function blockBreak(BlockBreakEvent $ev){
 		$pl = $ev->getPlayer();
 		$num = $this->nowIsland($pl);
@@ -326,7 +315,6 @@ $this->c->set('islast', $num + 1);
 			$pl->sendMessage($this->prefix."수정권한이 없습니다.");
 		}
 	}
-	*/
 	/** 다른 곳에서 사용할 섬 메소드들*/
 	public function setIsland(int $num, Player $owner){
 		$this->loadConfig();
