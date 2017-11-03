@@ -258,7 +258,7 @@ $this->c->set('islast', $num + 1);
 						} else {
 							$this->loadConfig();
 							$pl->sendMessage(var_dump($this->c['island'][$this->nowIsland($pl)])); //TODO 간지나게
-							return true
+							return true;
 						}
 					}
 					default: {
